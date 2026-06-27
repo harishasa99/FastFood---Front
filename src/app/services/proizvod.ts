@@ -5,7 +5,7 @@ import { Proizvod } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class ProizvodService {
-  private apiUrl = 'https://localhost:7147/api/proizvod';
+  private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api/proizvod';
 
   constructor(private http: HttpClient) {}
 

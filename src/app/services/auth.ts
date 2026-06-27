@@ -6,7 +6,7 @@ import { LoginResponse } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'https://localhost:7147/api';
+  private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api';
 
   constructor(
     private http: HttpClient,

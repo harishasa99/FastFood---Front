@@ -5,7 +5,7 @@ import { Racun, KreirajRacunDto } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class RacunService {
-  private apiUrl = 'https://localhost:7147/api/racun';
+  private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api/racun';
 
   constructor(private http: HttpClient) {}
 
