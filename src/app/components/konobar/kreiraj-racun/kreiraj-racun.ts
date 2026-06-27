@@ -200,7 +200,7 @@ export class KreirajRacunComponent implements OnInit {
   datumKorpe = '';
   ucitavanjeKorpe = false;
 
-  private apiUrl = 'https://localhost:7147/api';
+  private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api';
 
   constructor(
     private proizvodService: ProizvodService,

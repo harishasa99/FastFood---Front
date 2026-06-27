@@ -79,7 +79,7 @@ export class SviRacuniComponent implements OnInit {
   racuni: any[] = [];
   ucitavanje = true;
 
-  private apiUrl = 'https://localhost:7147/api';
+  private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api';
 
   constructor(
     private http: HttpClient,

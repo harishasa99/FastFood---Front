@@ -94,7 +94,7 @@ export class ProfilComponent implements OnInit {
   staraLozinka = '';
   novaLozinka = '';
 
-  private apiUrl = 'https://localhost:7147/api/korisnik';
+  private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api/korisnik';
 
   constructor(
     private http: HttpClient,
