@@ -7,6 +7,7 @@ import { ProizvodService } from '../../../services/proizvod';
 import { Proizvod } from '../../../models';
 import { HeaderComponent } from '../../shared/header/header';
 import { FooterComponent } from '../../shared/footer/footer';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-meni',
@@ -14,8 +15,7 @@ import { FooterComponent } from '../../shared/footer/footer';
   imports: [CommonModule, RouterLink, MatSnackBarModule, HeaderComponent, FooterComponent],
   template: `
     <div class="ff-page">
-      <app-header role="korisnik" [ime]="'Korisnik'"></app-header>
-
+      <app-header role="korisnik" [ime]="ime"></app-header>
       <main class="ff-main-content">
         <div class="ff-page-title">
           <a class="ff-back-btn" routerLink="/korisnik/dashboard">⬅ Nazad</a>
@@ -68,7 +68,6 @@ import { FooterComponent } from '../../shared/footer/footer';
           ✅ Narudžba je poslata konobaru! Sačekajte račun.
         </div>
       </main>
-
       <app-footer></app-footer>
     </div>
   `,
@@ -79,6 +78,7 @@ export class MeniComponent implements OnInit {
   korpa: Array<Proizvod & { kolicina: number }> = [];
   ucitavanje = true;
   poslato = false;
+  ime = '';
 
   private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api';
 
@@ -87,7 +87,10 @@ export class MeniComponent implements OnInit {
     private snackBar: MatSnackBar,
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
-  ) {}
+    private auth: AuthService,
+  ) {
+    this.ime = this.auth.getIme() || 'Korisnik';
+  }
 
   ngOnInit() {
     this.proizvodService.getSvi().subscribe({
@@ -115,18 +118,15 @@ export class MeniComponent implements OnInit {
     this.cdr.detectChanges();
     this.snackBar.open(`${p.naziv} dodan u korpu`, 'OK', { duration: 1500 });
   }
-
   ukloni(id: string) {
     this.korpa = this.korpa.filter((k) => k.id !== id);
     this.cdr.detectChanges();
   }
-
   ocistiKorpu() {
     this.korpa = [];
     this.poslato = false;
     this.cdr.detectChanges();
   }
-
   ukupno(): number {
     return this.korpa.reduce((sum, k) => sum + k.cena * k.kolicina, 0);
   }
@@ -138,7 +138,6 @@ export class MeniComponent implements OnInit {
       cena: k.cena,
       kolicina: k.kolicina,
     }));
-
     this.http.post(`${this.apiUrl}/korpa`, stavke).subscribe({
       next: () => {
         this.poslato = true;

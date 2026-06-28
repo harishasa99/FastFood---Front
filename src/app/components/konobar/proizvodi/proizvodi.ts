@@ -9,6 +9,7 @@ import { ProizvodService } from '../../../services/proizvod';
 import { Proizvod } from '../../../models';
 import { HeaderComponent } from '../../shared/header/header';
 import { FooterComponent } from '../../shared/footer/footer';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-proizvodi',
@@ -25,8 +26,7 @@ import { FooterComponent } from '../../shared/footer/footer';
   ],
   template: `
     <div class="ff-page">
-      <app-header role="konobar" [ime]="'Konobar'"></app-header>
-
+      <app-header role="konobar" [ime]="ime"></app-header>
       <main class="ff-main-content">
         <div class="ff-page-title">
           <a class="ff-back-btn" routerLink="/konobar/dashboard">⬅ Nazad</a>
@@ -37,22 +37,18 @@ import { FooterComponent } from '../../shared/footer/footer';
           <div class="ff-form-title">
             {{ editMode ? 'Izmijeni proizvod' : 'Dodaj novi proizvod' }}
           </div>
-
           <mat-form-field appearance="outline" style="width:100%">
             <mat-label>Naziv</mat-label>
             <input matInput [(ngModel)]="naziv" />
           </mat-form-field>
-
           <mat-form-field appearance="outline" style="width:100%">
             <mat-label>Opis</mat-label>
             <input matInput [(ngModel)]="opis" />
           </mat-form-field>
-
           <mat-form-field appearance="outline" style="width:100%">
             <mat-label>Cijena (RSD)</mat-label>
             <input matInput [(ngModel)]="cena" type="number" />
           </mat-form-field>
-
           <div style="display:flex;gap:8px;margin-top:4px">
             <button class="ff-btn-primary" style="flex:1" (click)="sacuvaj()">
               {{ editMode ? 'Sačuvaj izmjene' : 'Dodaj proizvod' }}
@@ -81,7 +77,6 @@ import { FooterComponent } from '../../shared/footer/footer';
           </div>
         </div>
       </main>
-
       <app-footer></app-footer>
     </div>
   `,
@@ -94,11 +89,15 @@ export class ProizvodiComponent implements OnInit {
   cena = 0;
   editMode = false;
   editId = '';
+  ime = '';
 
   constructor(
     private proizvodService: ProizvodService,
     private snackBar: MatSnackBar,
-  ) {}
+    private auth: AuthService,
+  ) {
+    this.ime = this.auth.getIme() || 'Konobar';
+  }
 
   ngOnInit() {
     this.ucitaj();
@@ -118,9 +117,7 @@ export class ProizvodiComponent implements OnInit {
       this.snackBar.open('Naziv i cijena su obavezni!', 'OK', { duration: 3000 });
       return;
     }
-
     const dto = { naziv: this.naziv, opis: this.opis, cena: this.cena };
-
     if (this.editMode) {
       this.proizvodService.azuriraj(this.editId, dto).subscribe({
         next: () => {

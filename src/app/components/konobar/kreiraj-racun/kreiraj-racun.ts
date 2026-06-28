@@ -13,6 +13,7 @@ import { RacunService } from '../../../services/racun';
 import { Proizvod, Korisnik } from '../../../models';
 import { HeaderComponent } from '../../shared/header/header';
 import { FooterComponent } from '../../shared/footer/footer';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-kreiraj-racun',
@@ -30,8 +31,7 @@ import { FooterComponent } from '../../shared/footer/footer';
   ],
   template: `
     <div class="ff-page">
-      <app-header role="konobar" [ime]="'Konobar'"></app-header>
-
+      <app-header role="konobar" [ime]="ime"></app-header>
       <main class="ff-main-content">
         <div class="ff-page-title">
           <a class="ff-back-btn" routerLink="/konobar/dashboard">⬅ Nazad</a>
@@ -106,7 +106,6 @@ import { FooterComponent } from '../../shared/footer/footer';
           </div>
         </div>
       </main>
-
       <app-footer></app-footer>
     </div>
   `,
@@ -121,6 +120,7 @@ export class KreirajRacunComponent implements OnInit {
   imaKorpu = false;
   datumKorpe = '';
   ucitavanjeKorpe = false;
+  ime = '';
 
   private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api';
 
@@ -131,7 +131,10 @@ export class KreirajRacunComponent implements OnInit {
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
-  ) {}
+    private auth: AuthService,
+  ) {
+    this.ime = this.auth.getIme() || 'Konobar';
+  }
 
   ngOnInit() {
     this.proizvodService.getSvi().subscribe((data) => {
@@ -149,7 +152,6 @@ export class KreirajRacunComponent implements OnInit {
     this.ucitavanjeKorpe = true;
     this.stavke = [];
     this.imaKorpu = false;
-
     this.http.get<any>(`${this.apiUrl}/korpa/korisnik/${korisnikId}`).subscribe({
       next: (res) => {
         this.ucitavanjeKorpe = false;
@@ -174,7 +176,6 @@ export class KreirajRacunComponent implements OnInit {
     const s = this.stavke.find((s) => s.idProizvoda === idProizvoda);
     return s ? s.kolicina : 0;
   }
-
   povecajKolicinu(idProizvoda: string) {
     const s = this.stavke.find((s) => s.idProizvoda === idProizvoda);
     if (s) {
@@ -184,7 +185,6 @@ export class KreirajRacunComponent implements OnInit {
     }
     this.cdr.detectChanges();
   }
-
   smanjiKolicinu(idProizvoda: string) {
     const index = this.stavke.findIndex((s) => s.idProizvoda === idProizvoda);
     if (index !== -1) {
@@ -196,36 +196,30 @@ export class KreirajRacunComponent implements OnInit {
     }
     this.cdr.detectChanges();
   }
-
   getNaziv(idProizvoda: string): string {
     return this.proizvodi.find((p) => p.id === idProizvoda)?.naziv || '';
   }
-
   getCena(idProizvoda: string): number {
     return this.proizvodi.find((p) => p.id === idProizvoda)?.cena || 0;
   }
-
   ukupno(): number {
     return this.stavke.reduce((sum, s) => sum + this.getCena(s.idProizvoda) * s.kolicina, 0);
   }
 
   kreirajRacun() {
-    const dto = {
-      korisnikId: this.odabraniKorisnikId,
-      stavke: this.stavke,
-    };
-
-    this.racunService.kreirajRacun(dto).subscribe({
-      next: (res) => {
-        this.kreiranRacun = res;
-        this.http.delete(`${this.apiUrl}/korpa/korisnik/${this.odabraniKorisnikId}`).subscribe();
-        this.stavke = [];
-        this.odabraniKorisnikId = '';
-        this.imaKorpu = false;
-        this.cdr.detectChanges();
-        this.snackBar.open('Račun uspješno kreiran!', 'OK', { duration: 3000 });
-      },
-      error: () => this.snackBar.open('Greška pri kreiranju računa', 'OK', { duration: 3000 }),
-    });
+    this.racunService
+      .kreirajRacun({ korisnikId: this.odabraniKorisnikId, stavke: this.stavke })
+      .subscribe({
+        next: (res) => {
+          this.kreiranRacun = res;
+          this.http.delete(`${this.apiUrl}/korpa/korisnik/${this.odabraniKorisnikId}`).subscribe();
+          this.stavke = [];
+          this.odabraniKorisnikId = '';
+          this.imaKorpu = false;
+          this.cdr.detectChanges();
+          this.snackBar.open('Račun uspješno kreiran!', 'OK', { duration: 3000 });
+        },
+        error: () => this.snackBar.open('Greška pri kreiranju računa', 'OK', { duration: 3000 }),
+      });
   }
 }
