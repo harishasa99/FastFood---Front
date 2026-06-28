@@ -1,16 +1,18 @@
 @use '@angular/material' as mat;
-@include mat.core();
 
-$ff-theme: mat.define-light-theme(
-  (
-    color: (
-      primary: mat.define-palette(mat.$orange-palette, 700),
-      accent: mat.define-palette(mat.$orange-palette, 400),
-      warn: mat.define-palette(mat.$red-palette),
-    ),
-  )
-);
-@include mat.all-component-themes($ff-theme);
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$orange-palette,
+        tertiary: mat.$red-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
 
 :root {
   --ff-orange: #e8700a;
@@ -20,6 +22,7 @@ $ff-theme: mat.define-light-theme(
   --ff-text: #2c1a00;
   --ff-text-sub: #7a4a1a;
   --ff-bg: #fff8f2;
+  --ff-white: #ffffff;
   --ff-success: #1d7a3a;
   --ff-success-bg: #e8f5ed;
   --ff-danger: #a32d2d;
