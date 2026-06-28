@@ -1,118 +1,78 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
 import { ProizvodService } from '../../../services/proizvod';
 import { Proizvod } from '../../../models';
+import { HeaderComponent } from '../../shared/header/header';
+import { FooterComponent } from '../../shared/footer/footer';
 
 @Component({
   selector: 'app-meni',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatSnackBarModule],
+  imports: [CommonModule, RouterLink, MatSnackBarModule, HeaderComponent, FooterComponent],
   template: `
-    <div class="container">
-      <div class="header">
-        <a routerLink="/korisnik/dashboard">⬅ Nazad</a>
-        <h2>🍕 Naš Meni</h2>
-      </div>
+    <div class="ff-page">
+      <app-header role="korisnik" [ime]="'Korisnik'"></app-header>
 
-      <p *ngIf="ucitavanje">Učitavanje proizvoda...</p>
-
-      <div class="grid">
-        <mat-card *ngFor="let p of proizvodi" class="card">
-          <mat-card-header>
-            <mat-card-title>{{ p.naziv }}</mat-card-title>
-            <mat-card-subtitle>
-              {{ p.cena | currency: 'RSD' : 'symbol' : '1.0-0' }}
-            </mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <p>{{ p.opis }}</p>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-raised-button color="primary" (click)="dodajUKorpu(p)">
-              Dodaj u korpu
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
-
-      <div class="korpa" *ngIf="korpa.length > 0">
-        <h3>🛒 Korpa</h3>
-        <div class="stavka" *ngFor="let k of korpa">
-          <span>{{ k.naziv }} × {{ k.kolicina }}</span>
-          <span>{{ k.cena * k.kolicina | currency: 'RSD' : 'symbol' : '1.0-0' }}</span>
-          <button mat-button color="warn" (click)="ukloni(k.id)">✕</button>
+      <main class="ff-main-content">
+        <div class="ff-page-title">
+          <a class="ff-back-btn" routerLink="/korisnik/dashboard">⬅ Nazad</a>
+          <span class="ff-page-h">Naš meni</span>
         </div>
-        <div class="ukupno">
-          <strong>Ukupno: {{ ukupno() | currency: 'RSD' : 'symbol' : '1.0-0' }}</strong>
+
+        <p *ngIf="ucitavanje" class="ff-empty">Učitavanje proizvoda...</p>
+
+        <div class="ff-menu-grid">
+          <div class="ff-menu-card" *ngFor="let p of proizvodi">
+            <div class="ff-menu-name">{{ p.naziv }}</div>
+            <div class="ff-menu-desc">{{ p.opis }}</div>
+            <div class="ff-menu-bottom">
+              <span class="ff-menu-price">{{ p.cena | currency: 'RSD' : 'symbol' : '1.0-0' }}</span>
+              <button class="ff-btn-add" (click)="dodajUKorpu(p)">+ Dodaj</button>
+            </div>
+          </div>
         </div>
-        <div class="akcije">
-          <button mat-raised-button color="accent" (click)="posaljiNarudzbu()">
+
+        <div class="ff-korpa" *ngIf="korpa.length > 0">
+          <div class="ff-korpa-title">🛒 Korpa</div>
+          <div class="ff-korpa-row" *ngFor="let k of korpa">
+            <span>{{ k.naziv }} × {{ k.kolicina }}</span>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span>{{ k.cena * k.kolicina | currency: 'RSD' : 'symbol' : '1.0-0' }}</span>
+              <button
+                style="background:none;border:none;color:#a32d2d;cursor:pointer;font-size:16px;padding:0"
+                (click)="ukloni(k.id)"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          <div class="ff-korpa-total">
+            <span>Ukupno</span>
+            <span>{{ ukupno() | currency: 'RSD' : 'symbol' : '1.0-0' }}</span>
+          </div>
+          <button class="ff-btn-primary" (click)="posaljiNarudzbu()">
             📨 Pošalji narudžbu konobaru
           </button>
-          <button mat-button color="warn" (click)="ocistiKorpu()">🗑️ Očisti korpu</button>
+          <button
+            style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid #ddd;border-radius:6px;cursor:pointer;color:#888;font-size:13px"
+            (click)="ocistiKorpu()"
+          >
+            🗑️ Očisti korpu
+          </button>
         </div>
-      </div>
 
-      <div class="poslato" *ngIf="poslato">✅ Narudžba je poslata konobaru! Sačekajte račun.</div>
+        <div class="ff-success-banner" *ngIf="poslato">
+          ✅ Narudžba je poslata konobaru! Sačekajte račun.
+        </div>
+      </main>
+
+      <app-footer></app-footer>
     </div>
   `,
-  styles: [
-    `
-      .container {
-        padding: 20px;
-      }
-      .header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 20px;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 16px;
-      }
-      .card {
-        height: 100%;
-      }
-      .korpa {
-        margin-top: 30px;
-        padding: 20px;
-        background: #fff8e1;
-        border-radius: 8px;
-      }
-      .stavka {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid #eee;
-      }
-      .ukupno {
-        margin-top: 10px;
-        font-size: 18px;
-        text-align: right;
-      }
-      .akcije {
-        margin-top: 16px;
-        display: flex;
-        gap: 10px;
-      }
-      .poslato {
-        margin-top: 20px;
-        padding: 16px;
-        background: #e8f5e9;
-        border-radius: 8px;
-        font-size: 16px;
-        color: green;
-      }
-    `,
-  ],
+  styles: [],
 })
 export class MeniComponent implements OnInit {
   proizvodi: Proizvod[] = [];

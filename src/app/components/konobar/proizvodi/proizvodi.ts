@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProizvodService } from '../../../services/proizvod';
 import { Proizvod } from '../../../models';
+import { HeaderComponent } from '../../shared/header/header';
+import { FooterComponent } from '../../shared/footer/footer';
 
 @Component({
   selector: 'app-proizvodi',
@@ -17,94 +17,75 @@ import { Proizvod } from '../../../models';
     CommonModule,
     FormsModule,
     RouterLink,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
     MatSnackBarModule,
+    HeaderComponent,
+    FooterComponent,
   ],
   template: `
-    <div class="container">
-      <div class="header">
-        <a routerLink="/konobar/dashboard">⬅ Nazad</a>
-        <h2>🍕 Upravljanje Proizvodima</h2>
-      </div>
+    <div class="ff-page">
+      <app-header role="konobar" [ime]="'Konobar'"></app-header>
 
-      <mat-card class="forma">
-        <mat-card-header>
-          <mat-card-title>{{
-            editMode ? 'Izmijeni proizvod' : 'Dodaj novi proizvod'
-          }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-form-field appearance="outline" class="full">
+      <main class="ff-main-content">
+        <div class="ff-page-title">
+          <a class="ff-back-btn" routerLink="/konobar/dashboard">⬅ Nazad</a>
+          <span class="ff-page-h">Upravljanje proizvodima</span>
+        </div>
+
+        <div class="ff-form-card">
+          <div class="ff-form-title">
+            {{ editMode ? 'Izmijeni proizvod' : 'Dodaj novi proizvod' }}
+          </div>
+
+          <mat-form-field appearance="outline" style="width:100%">
             <mat-label>Naziv</mat-label>
             <input matInput [(ngModel)]="naziv" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="full">
+          <mat-form-field appearance="outline" style="width:100%">
             <mat-label>Opis</mat-label>
             <input matInput [(ngModel)]="opis" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="full">
+          <mat-form-field appearance="outline" style="width:100%">
             <mat-label>Cijena (RSD)</mat-label>
             <input matInput [(ngModel)]="cena" type="number" />
           </mat-form-field>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-raised-button color="primary" (click)="sacuvaj()">
-            {{ editMode ? 'Sačuvaj izmjene' : 'Dodaj proizvod' }}
-          </button>
-          <button mat-button *ngIf="editMode" (click)="otkaziEdit()">Otkaži</button>
-        </mat-card-actions>
-      </mat-card>
 
-      <div class="grid">
-        <mat-card *ngFor="let p of proizvodi" class="card">
-          <mat-card-header>
-            <mat-card-title>{{ p.naziv }}</mat-card-title>
-            <mat-card-subtitle>{{
-              p.cena | currency: 'RSD' : 'symbol' : '1.0-0'
-            }}</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <p>{{ p.opis }}</p>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-button color="primary" (click)="uredi(p)">✏️ Uredi</button>
-            <button mat-button color="warn" (click)="obrisi(p.id)">🗑️ Obriši</button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="ff-btn-primary" style="flex:1" (click)="sacuvaj()">
+              {{ editMode ? 'Sačuvaj izmjene' : 'Dodaj proizvod' }}
+            </button>
+            <button
+              *ngIf="editMode"
+              style="flex:1;padding:10px;background:none;border:1px solid #ddd;border-radius:6px;cursor:pointer;font-size:14px;color:#888"
+              (click)="otkaziEdit()"
+            >
+              Otkaži
+            </button>
+          </div>
+        </div>
+
+        <p *ngIf="proizvodi.length === 0" class="ff-empty">Nema proizvoda.</p>
+
+        <div class="ff-prod-grid">
+          <div class="ff-prod-card" *ngFor="let p of proizvodi">
+            <div class="ff-prod-name">{{ p.naziv }}</div>
+            <div class="ff-prod-price">{{ p.cena | currency: 'RSD' : 'symbol' : '1.0-0' }}</div>
+            <div class="ff-prod-desc">{{ p.opis }}</div>
+            <div class="ff-prod-actions">
+              <button class="ff-btn-edit" (click)="uredi(p)">✏️ Uredi</button>
+              <button class="ff-btn-del" (click)="obrisi(p.id)">🗑️ Obriši</button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <app-footer></app-footer>
     </div>
   `,
-  styles: [
-    `
-      .container {
-        padding: 20px;
-      }
-      .header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 20px;
-      }
-      .forma {
-        margin-bottom: 30px;
-        padding: 20px;
-      }
-      .full {
-        width: 100%;
-        margin-top: 12px;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 16px;
-      }
-    `,
-  ],
+  styles: [],
 })
 export class ProizvodiComponent implements OnInit {
   proizvodi: Proizvod[] = [];

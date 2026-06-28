@@ -1,79 +1,59 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
+import { HeaderComponent } from '../../shared/header/header';
+import { FooterComponent } from '../../shared/footer/footer';
 
 @Component({
   selector: 'app-svi-racuni',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    MatCardModule,
-    MatButtonModule,
-    MatExpansionModule,
-    MatSnackBarModule,
-  ],
+  imports: [CommonModule, RouterLink, MatSnackBarModule, HeaderComponent, FooterComponent],
   template: `
-    <div class="container">
-      <div class="header">
-        <a routerLink="/konobar/dashboard">⬅ Nazad</a>
-        <h2>📋 Svi Računi</h2>
-      </div>
+    <div class="ff-page">
+      <app-header role="konobar" [ime]="'Konobar'"></app-header>
 
-      <p *ngIf="ucitavanje">Učitavanje računa...</p>
-      <p *ngIf="!ucitavanje && racuni.length === 0" class="prazno">Nema računa.</p>
+      <main class="ff-main-content">
+        <div class="ff-page-title">
+          <a class="ff-back-btn" routerLink="/konobar/dashboard">⬅ Nazad</a>
+          <span class="ff-page-h">Svi računi</span>
+        </div>
 
-      <mat-accordion>
-        <mat-expansion-panel *ngFor="let r of racuni">
-          <mat-expansion-panel-header>
-            <mat-panel-title> Račun {{ r.id | slice: 0 : 8 }}... </mat-panel-title>
-            <mat-panel-description>
-              {{ r.datum }} — {{ r.ukupnaCena | currency: 'RSD' : 'symbol' : '1.0-0' }}
-            </mat-panel-description>
-          </mat-expansion-panel-header>
+        <p *ngIf="ucitavanje" class="ff-empty">Učitavanje računa...</p>
+        <p *ngIf="!ucitavanje && racuni.length === 0" class="ff-empty">Nema računa.</p>
 
-          <div class="detalji">
-            <p><strong>Datum:</strong> {{ r.datum }}</p>
-            <p><strong>Vreme:</strong> {{ r.vreme }}</p>
-            <p><strong>Korisnik ID:</strong> {{ r.korisnikId }}</p>
-            <p><strong>Konobar ID:</strong> {{ r.konobarId }}</p>
-            <p>
-              <strong>Ukupno:</strong> {{ r.ukupnaCena | currency: 'RSD' : 'symbol' : '1.0-0' }}
-            </p>
+        <div class="ff-racun-item" *ngFor="let r of racuni">
+          <div class="ff-racun-header">
+            <span class="ff-racun-date"> 📅 {{ r.datum }} u {{ r.vreme }} </span>
+            <span class="ff-racun-amount">
+              {{ r.ukupnaCena | currency: 'RSD' : 'symbol' : '1.0-0' }}
+            </span>
           </div>
-        </mat-expansion-panel>
-      </mat-accordion>
+          <div class="ff-racun-row">
+            <span style="color:#aaa">Račun ID</span>
+            <span>{{ r.id | slice: 0 : 8 }}...</span>
+          </div>
+          <div class="ff-racun-row">
+            <span style="color:#aaa">Korisnik ID</span>
+            <span>{{ r.korisnikId | slice: 0 : 8 }}...</span>
+          </div>
+          <div class="ff-racun-row">
+            <span style="color:#aaa">Konobar ID</span>
+            <span>{{ r.konobarId | slice: 0 : 8 }}...</span>
+          </div>
+          <div
+            style="display:flex;justify-content:flex-end;padding-top:8px;font-size:14px;font-weight:500;color:var(--ff-orange)"
+          >
+            Ukupno: {{ r.ukupnaCena | currency: 'RSD' : 'symbol' : '1.0-0' }}
+          </div>
+        </div>
+      </main>
+
+      <app-footer></app-footer>
     </div>
   `,
-  styles: [
-    `
-      .container {
-        padding: 20px;
-      }
-      .header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 20px;
-      }
-      .prazno {
-        color: #888;
-        text-align: center;
-        margin-top: 40px;
-      }
-      .detalji {
-        padding: 10px 0;
-      }
-      .detalji p {
-        margin: 6px 0;
-      }
-    `,
-  ],
+  styles: [],
 })
 export class SviRacuniComponent implements OnInit {
   racuni: any[] = [];

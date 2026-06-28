@@ -1,39 +1,521 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+@include mat.core();
 
-html {
-  height: 100%;
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    )
-  );
+$ff-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: mat.define-palette(mat.$orange-palette, 700),
+      accent: mat.define-palette(mat.$orange-palette, 400),
+      warn: mat.define-palette(mat.$red-palette),
+    ),
+  )
+);
+@include mat.all-component-themes($ff-theme);
+
+:root {
+  --ff-orange: #e8700a;
+  --ff-orange-light: #fff3e8;
+  --ff-orange-dark: #b85500;
+  --ff-orange-border: #f5a05a;
+  --ff-text: #2c1a00;
+  --ff-text-sub: #7a4a1a;
+  --ff-bg: #fff8f2;
+  --ff-success: #1d7a3a;
+  --ff-success-bg: #e8f5ed;
+  --ff-danger: #a32d2d;
+  --ff-danger-bg: #fcebeb;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
   margin: 0;
-  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  background: var(--ff-bg);
+  color: var(--ff-text);
 }
-/* You can add global styles to this file, and also import other style files */
+
+.ff-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.ff-main-content {
+  flex: 1;
+  padding: 24px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.ff-header {
+  background: var(--ff-orange);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ff-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.ff-logo-icon {
+  width: 32px;
+  height: 32px;
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.ff-logo-text {
+  font-size: 17px;
+  font-weight: 500;
+  color: white;
+}
+.ff-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ff-nav a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+  &:hover,
+  &.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+}
+.ff-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ff-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+}
+.ff-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ff-orange);
+}
+.ff-user-name {
+  font-size: 13px;
+  color: white;
+}
+.ff-btn-logout {
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  font-size: 12px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+}
+
+.ff-footer {
+  background: var(--ff-orange);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ff-footer-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ff-page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.ff-page-h {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ff-text);
+}
+.ff-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--ff-orange);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  &:hover {
+    background: var(--ff-orange-light);
+  }
+}
+
+.ff-welcome {
+  background: var(--ff-orange-light);
+  border: 1px solid var(--ff-orange-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ff-welcome-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ff-text);
+}
+.ff-welcome-sub {
+  font-size: 13px;
+  color: var(--ff-text-sub);
+}
+
+.ff-dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+.ff-dash-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+  &:hover {
+    border-color: var(--ff-orange-border);
+    transform: translateY(-3px);
+  }
+}
+.ff-dash-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--ff-orange-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 26px;
+}
+.ff-dash-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ff-text);
+  margin-bottom: 4px;
+}
+.ff-dash-sub {
+  font-size: 12px;
+  color: #888;
+}
+
+.ff-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.ff-menu-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.ff-menu-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ff-text);
+}
+.ff-menu-desc {
+  font-size: 13px;
+  color: #888;
+  margin: 4px 0 12px;
+  flex: 1;
+}
+.ff-menu-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ff-menu-price {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ff-orange);
+}
+.ff-btn-add {
+  padding: 6px 14px;
+  background: var(--ff-orange);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    background: var(--ff-orange-dark);
+  }
+}
+
+.ff-korpa {
+  background: white;
+  border: 1px solid var(--ff-orange-border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 16px;
+}
+.ff-korpa-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ff-text);
+  margin-bottom: 12px;
+}
+.ff-korpa-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  color: #555;
+}
+.ff-korpa-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ff-text);
+}
+
+.ff-btn-primary {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background: var(--ff-orange);
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    background: var(--ff-orange-dark);
+  }
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.ff-racun-item {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.ff-racun-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.ff-racun-date {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ff-text);
+}
+.ff-racun-amount {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ff-orange);
+}
+.ff-racun-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #666;
+  padding: 3px 0;
+}
+
+.ff-profil-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 480px;
+}
+.ff-profil-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.ff-avatar-lg {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--ff-orange-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ff-orange);
+}
+
+.ff-prod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.ff-prod-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+}
+.ff-prod-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+.ff-prod-price {
+  font-size: 14px;
+  color: var(--ff-orange);
+  margin: 4px 0;
+}
+.ff-prod-desc {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+}
+.ff-prod-actions {
+  display: flex;
+  gap: 8px;
+}
+.ff-btn-edit {
+  padding: 5px 12px;
+  border: 1px solid var(--ff-orange-border);
+  border-radius: 6px;
+  background: var(--ff-orange-light);
+  font-size: 12px;
+  color: var(--ff-orange-dark);
+  cursor: pointer;
+}
+.ff-btn-del {
+  padding: 5px 12px;
+  border: 1px solid #f7c1c1;
+  border-radius: 6px;
+  background: #fcebeb;
+  font-size: 12px;
+  color: #a32d2d;
+  cursor: pointer;
+}
+
+.ff-form-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.ff-form-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ff-text);
+  margin-bottom: 14px;
+}
+
+.ff-proizvod-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.ff-qty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ff-qty-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--ff-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    border-color: var(--ff-orange);
+  }
+}
+.ff-qty-num {
+  font-size: 15px;
+  font-weight: 500;
+  min-width: 22px;
+  text-align: center;
+}
+
+.ff-success-banner {
+  background: var(--ff-success-bg);
+  border: 1px solid #a3d9b5;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ff-success);
+  font-weight: 500;
+  margin: 10px 0;
+}
+
+.ff-empty {
+  text-align: center;
+  padding: 40px;
+  color: #aaa;
+  font-size: 14px;
+}
