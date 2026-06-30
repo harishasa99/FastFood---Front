@@ -83,7 +83,6 @@ export class ProfilComponent implements OnInit {
   email = '';
   staraLozinka = '';
   novaLozinka = '';
-  ucitavanje = true;
 
   private apiUrl = 'https://fastfood-backend-production-322f.up.railway.app/api/korisnik';
 
@@ -99,13 +98,8 @@ export class ProfilComponent implements OnInit {
         this.ime = data.ime;
         this.prezime = data.prezime;
         this.email = data.email;
-        this.ucitavanje = false;
       },
-      error: () => {
-        this.ime = this.auth.getIme() || 'Korisnik';
-        this.ucitavanje = false;
-        this.snackBar.open('Greška pri učitavanju profila', 'OK', { duration: 3000 });
-      },
+      error: () => this.snackBar.open('Greška pri učitavanju profila', 'OK', { duration: 3000 }),
     });
   }
 
@@ -116,10 +110,7 @@ export class ProfilComponent implements OnInit {
       dto.novaLozinka = this.novaLozinka;
     }
     this.http.put(`${this.apiUrl}/profil`, dto).subscribe({
-      next: () => {
-        localStorage.setItem('ime', this.ime);
-        this.snackBar.open('Profil ažuriran!', 'OK', { duration: 3000 });
-      },
+      next: () => this.snackBar.open('Profil ažuriran!', 'OK', { duration: 3000 }),
       error: () => this.snackBar.open('Greška pri ažuriranju profila', 'OK', { duration: 3000 }),
     });
   }
