@@ -90,7 +90,9 @@ export class ProfilComponent implements OnInit {
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private auth: AuthService,
-  ) {}
+  ) {
+    this.ime = this.auth.getIme() || 'Korisnik';
+  }
 
   ngOnInit() {
     this.http.get<any>(`${this.apiUrl}/profil`).subscribe({
