@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -90,6 +90,7 @@ export class ProfilComponent implements OnInit {
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private auth: AuthService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.ime = this.auth.getIme() || 'Korisnik';
   }
@@ -100,6 +101,7 @@ export class ProfilComponent implements OnInit {
         this.ime = data.ime;
         this.prezime = data.prezime;
         this.email = data.email;
+        this.cdr.detectChanges();
       },
       error: () => this.snackBar.open('Greška pri učitavanju profila', 'OK', { duration: 3000 }),
     });
