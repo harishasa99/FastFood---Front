@@ -107,6 +107,7 @@ export class ProizvodiComponent implements OnInit {
     this.proizvodService.getSvi().subscribe({
       next: (data) => {
         this.proizvodi = data;
+        console.log(this.proizvodi);
       },
       error: () => this.snackBar.open('Greška pri učitavanju', 'OK', { duration: 3000 }),
     });
