@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -95,6 +95,7 @@ export class ProizvodiComponent implements OnInit {
     private proizvodService: ProizvodService,
     private snackBar: MatSnackBar,
     private auth: AuthService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.ime = this.auth.getIme() || 'Konobar';
   }
@@ -107,7 +108,7 @@ export class ProizvodiComponent implements OnInit {
     this.proizvodService.getSvi().subscribe({
       next: (data) => {
         this.proizvodi = data;
-        console.log(this.proizvodi);
+        this.cdr.detectChanges();
       },
       error: () => this.snackBar.open('Greška pri učitavanju', 'OK', { duration: 3000 }),
     });
