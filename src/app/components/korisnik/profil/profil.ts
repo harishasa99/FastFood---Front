@@ -112,7 +112,10 @@ export class ProfilComponent implements OnInit {
       dto.novaLozinka = this.novaLozinka;
     }
     this.http.put(`${this.apiUrl}/profil`, dto).subscribe({
-      next: () => this.snackBar.open('Profil ažuriran!', 'OK', { duration: 3000 }),
+      next: () => {
+        localStorage.setItem('ime', this.ime);
+        this.snackBar.open('Profil ažuriran!', 'OK', { duration: 3000 });
+      },
       error: () => this.snackBar.open('Greška pri ažuriranju profila', 'OK', { duration: 3000 }),
     });
   }
