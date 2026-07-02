@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -220,6 +220,7 @@ export class LoginComponent {
   constructor(
     private auth: AuthService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   jeFormPopunjena(): boolean {
@@ -244,6 +245,7 @@ export class LoginComponent {
         error: () => {
           this.ucitavanje = false;
           this.greska = 'Pogrešan email ili lozinka!';
+          this.cdr.detectChanges();
         },
       });
     } else {
@@ -255,6 +257,7 @@ export class LoginComponent {
         error: () => {
           this.ucitavanje = false;
           this.greska = 'Pogrešno ime ili lozinka!';
+          this.cdr.detectChanges();
         },
       });
     }
